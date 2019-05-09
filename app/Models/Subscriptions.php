@@ -12,4 +12,21 @@ class Subscriptions extends Model
      * @var string
      */
     protected $table = 'subscriptions';
+    
+    public function user() {
+        return $this->belongsTo('App\Models\Users', 'user_id', 'id');
+    }
+    
+    public function service() {
+        return $this->belongsTo('App\Models\Services', 'service_id', 'id');
+    }
+    
+    public function status() {
+        return $this->belongsTo('App\Models\Status', 'status_id', 'id');
+    }
+    
+    public function previousStatus() {
+        return $this->belongsTo('App\Models\Status', 'previous_status', 'id');
+    }
+
 }
