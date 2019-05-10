@@ -13,6 +13,10 @@ class Subscriptions extends Model
      */
     protected $table = 'subscriptions';
     
+    protected $dates = [
+        'status_change',
+      ];
+    
     public function user() {
         return $this->belongsTo('App\Models\Users', 'user_id', 'id');
     }
