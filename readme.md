@@ -4,20 +4,38 @@ Este proyecto consiste en el desarrollo de dos servicios para suscripción y can
 
 Adicional se debe realizar un comando para obtener las suscripciones.
 
-Para iniciar el proyecto se debe ejecutar el comando: 
+## Instalación
 
-´´´
+
+## Notas:
+
+- Instalar con composer install
+
+- Hacer copia de ./.env.example a .env
+
+- Configurar el ./.env con los datos de la BD con nombre: test_bennu
+
+- crear key de seguridad con el comando: php artisan key:generate
+
+- Para iniciar el proyecto se debe ejecutar el comando: 
+
+```
 php artisan migrate
-´´´
+```
 
-Esto ejecuta el archivo de migración: 2019_05_08_022611_create_schema, que a la vez corre el script encontrado en database/scripts/test_bennu.sql.
+- Esto ejecuta el archivo de migración: 2019_05_08_022611_create_schema, que a la vez corre el script encontrado en database/scripts/test_bennu.sql.
 
-Luego se debe ejecutar el comando para cargar los usuarios:
+- Luego se debe ejecutar el comando para cargar los usuarios:
 
-´´´
+```
 php artisan db:seed --class=UsersSeeders
-´´´
+```
 
+- Correr el servidor con el comando:
+
+```
+php artisan serve
+```
 
 ### Base de datos
 
@@ -30,25 +48,19 @@ Se crearon cuatro (4) tablas, para resolver el test. Estas tablas son:
 
 ## Servicios:
 
-Primero se debe correr el servidor con el comando:
-
-´´´
-php artisan serve
-´´´
-
 ### Servicio de suscripción:
 
 URL: http://localhost:8000/api/subscription
 Method: POST
 Request:
 
-´´´
+```
 {
 "customer": "00001",
 "date": "2019-05-08",
 "service": "classic"
 }
-´´´
+```
 
 Response:
 404: Customer not found
@@ -56,7 +68,7 @@ Response:
 406: Not Acceptable. Ej.: ya tiene el servicio
 201: 
 
-´´´
+```
 {
     "user_id": 56,
     "service_id": 3,
@@ -80,7 +92,7 @@ Response:
         "status": "subscribe"
     }
 }
-´´´
+```
 
 ### Servicio de cancelación de suscripción:
 
@@ -99,24 +111,24 @@ Response:
 Muestra un resumen de las sucripciones creadas y canceladas en una fecha dada, además de todas las activas hasta la fecha.
 Se debe correr el comando así:
 
-´´´
+```
 php artisan report:subscriptions 2019-05-08
-´´´
+```
 
 Si hay algún error en la fecha muestra un error como el siguiente:
 
-´´´
+```
 Error: Invalid date format, must be YYYY-MM-DD.
-´´´
+```
 
 En caso de éxito el resumen queda así:
 
-´´´
+```
 Resumen de suscripciones para el día: 2019-05-08
 - Cantidad de nuevas suscripciones: 1
 - Cantidad de suscripciones canceladas: 0
 - Cantidad de suscripciones activas: 1
-´´´
+```
 
 ## Clases creadas
 
@@ -124,9 +136,3 @@ Resumen de suscripciones para el día: 2019-05-08
 - SubscriptionsReport: Es la clase del comando de consola
 - Modelos: Todos se ubican en la ruta: App\Models
 - SubscriptionRepository: clase en el namespace App\Repositories, se encarga de realizar el conjunto de queries relacionados a las suscripciones.
-
-## Notas:
-
-- Instalar con composer install
-- Recordar configurar el ./.env con los datos de la BD con nombre: test_bennu
-- crear key de seguridad con el comando: php artisan key:generate

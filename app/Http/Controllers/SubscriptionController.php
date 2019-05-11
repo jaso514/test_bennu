@@ -84,7 +84,7 @@ class SubscriptionController extends Controller
            'service' => $service, 
            'status' => $unsubscribe,
            'previousStatus' => $subscription->status, 
-           'date' => date('Y-m-d'), 
+           'date' => date('Y-m-d H:i:s'), 
         ]);
         
         return response()->json($subscriptionDelete, 204);
