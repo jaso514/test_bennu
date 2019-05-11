@@ -32,7 +32,7 @@ class SubscriptionsReport extends Command
     }
 
     /**
-     * Execute the console command.
+     * Show the quantity of 
      *
      * @return mixed
      */
@@ -45,15 +45,14 @@ class SubscriptionsReport extends Command
           ]);
 
         if ($validator->fails()) {
-          echo "Error: Invalid date format, must be YYYY-MM-DD.";
-          exit(0);
+          $this->error("Error: Invalid date format, must be YYYY-MM-DD.");
         } else {
           $repo = new \App\Repositories\SubscriptionRepository();
-          echo $date;
-          echo "\n";
-          dump($repo->getSubscriptions($date));
-          dump($repo->getUnsubscriptions($date));
-          dump($repo->getActives($date));
+          $this->info("Resumen de suscripciones para el día: " . $date);
+          $this->line("- Cantidad de nuevas suscripciones: " . $repo->getSubscriptions($date));
+          $this->line("- Cantidad de suscripciones canceladas: " . $repo->getUnsubscriptions($date));
+          $this->line("- Cantidad de suscripciones activas: " . $repo->getActives($date));
         }
+        exit(0);
     }
 }

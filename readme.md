@@ -1,72 +1,132 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## Test Bennu
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Este proyecto consiste en el desarrollo de dos servicios para suscripción y cancelar suscripciones.
 
-## About Laravel
+Adicional se debe realizar un comando para obtener las suscripciones.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Para iniciar el proyecto se debe ejecutar el comando: 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+´´´
+php artisan migrate
+´´´
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Esto ejecuta el archivo de migración: 2019_05_08_022611_create_schema, que a la vez corre el script encontrado en database/scripts/test_bennu.sql.
 
-## Learning Laravel
+Luego se debe ejecutar el comando para cargar los usuarios:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+´´´
+php artisan db:seed --class=UsersSeeders
+´´´
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1400 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+### Base de datos
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Se crearon cuatro (4) tablas, para resolver el test. Estas tablas son:
+- __users__: tiene los usuarios clientes del sistema. Estos tienen como nro_cliente 5 digitos, siempre empezando por ceros (0), ejemplo 00001, 00012. Estos son agregados con el Seeder de usuarios.
+- __services__: tiene los servicios que se ofrecen, se usaran los siguientes códigos: premium, premium_hd, classic, classic_hd
+- __subscriptions__: tiene el estado de subscripción
+- __status__: tiene los estados de subscripción: subscribe (crea la suscribirse), unsubscribe (cancela la suscripción), pause (opcional: pausa la suscripción).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
 
-## Contributing
+## Servicios:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Primero se debe correr el servidor con el comando:
 
-## Security Vulnerabilities
+´´´
+php artisan serve
+´´´
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Servicio de suscripción:
 
-## License
+URL: http://localhost:8000/api/subscription
+Method: POST
+Request:
 
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+´´´
+{
+"customer": "00001",
+"date": "2019-05-08",
+"service": "classic"
+}
+´´´
+
+Response:
+404: Customer not found
+404: Service not found
+406: Not Acceptable. Ej.: ya tiene el servicio
+201: 
+
+´´´
+{
+    "user_id": 56,
+    "service_id": 3,
+    "status_id": 1,
+    "status_change": "2019-05-08 00:00:00",
+    "updated_at": "2019-05-11 02:00:50",
+    "created_at": "2019-05-11 02:00:50",
+    "id": 5,
+    "user": {
+        "id": 56,
+        "nro_cliente": "000000000006",
+        "nro_documento": 23811421
+    },
+    "service": {
+        "id": 3,
+        "name": "Classic",
+        "code": "classic"
+    },
+    "status": {
+        "id": 1,
+        "status": "subscribe"
+    }
+}
+´´´
+
+### Servicio de cancelación de suscripción:
+
+URL: http://localhost:8000/api/subscription/<nro_cliente>/<codigo_servicio>
+Ej: http://localhost:8000/api/subscription/00001/classic
+Method: DELETE
+Response:
+404: Customer not found
+404: Service not found
+406: Not Acceptable. Ej.: ya no tiene el servicio
+204: Success
+
+
+## Comando de resumen de suscripciones:
+
+Muestra un resumen de las sucripciones creadas y canceladas en una fecha dada, además de todas las activas hasta la fecha.
+Se debe correr el comando así:
+
+´´´
+php artisan report:subscriptions 2019-05-08
+´´´
+
+Si hay algún error en la fecha muestra un error como el siguiente:
+
+´´´
+Error: Invalid date format, must be YYYY-MM-DD.
+´´´
+
+En caso de éxito el resumen queda así:
+
+´´´
+Resumen de suscripciones para el día: 2019-05-08
+- Cantidad de nuevas suscripciones: 1
+- Cantidad de suscripciones canceladas: 0
+- Cantidad de suscripciones activas: 1
+´´´
+
+## Clases creadas
+
+- SubscriptionController: class de los servicio REST.
+- SubscriptionsReport: Es la clase del comando de consola
+- Modelos: Todos se ubican en la ruta: App\Models
+- SubscriptionRepository: clase en el namespace App\Repositories, se encarga de realizar el conjunto de queries relacionados a las suscripciones.
+
+## Notas:
+
+- Instalar con composer install
+- Recordar configurar el ./.env con los datos de la BD con nombre: test_bennu
+- crear key de seguridad con el comando: php artisan key:generate

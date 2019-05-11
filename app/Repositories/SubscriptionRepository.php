@@ -18,6 +18,13 @@ class SubscriptionRepository {
       $this->subscription = $subscription;
   }
   
+  /**
+   * Verify if the customer have a service, if have it return the subscription
+   * if not, return false
+   * @param Users $customer
+   * @param Services $service
+   * @return bool|Subscriptions
+   */
   public function existSubscription(Users $customer, Services $service) {
       $subscription = Subscriptions::where([
           'user_id' => $customer->id,
@@ -27,7 +34,12 @@ class SubscriptionRepository {
       return $subscription?$subscription:false;
   }
   
-  public function save($data) {
+  /**
+   * create and save a Subscriptions object
+   * @param array $data
+   * @return Subscriptions
+   */
+  public function save(array $data) {
     $subscription = new Subscriptions();
         
     $subscription->user()->associate($data['customer']);
@@ -44,33 +56,52 @@ class SubscriptionRepository {
     return $subscription;
   }
   
+  /**
+   * Return the count of Subscriptions of the given date
+   * @param string $date
+   * @return int
+   */
   public function getSubscriptions($date) {
     $start = $date . ' 00:00:00';
     $end = $date . ' 23:59:59';
-    $subscriptions = Subscriptions::query()
-        ->whereHas('status', function($query) {
-            $query->where('status', '=', 'subscribe');
-        })
-        ->where('status_change', '>=', $start)
-        ->where('status_change', '<=', $end)->count();
-        
-    return $subscriptions;
+    return $this->countByDate($start, $end, 'subscribe');
   }
   
+  /**
+   * Return the count of UnSubscriptions of the given date
+   * @param string $date
+   * @return int
+   */
   public function getUnsubscriptions($date) {
     $start = $date . ' 00:00:00';
     $end = $date . ' 23:59:59';
     
+    return $this->countByDate($start, $end, 'unsubscribe');
+  }
+  
+  /**
+   * Return the quantity of subscription by date range and status
+   * @param $start
+   * @param $end
+   * @param $status
+   * @return int
+   */
+  public function countByDate($start, $end, $status) {
     $subscriptions = Subscriptions::query()
-        ->whereHas('status', function($query) {
-            $query->where('status', '=', 'unsubscribe');
-        })
+        ->whereHas('status', function($query) use ($status) {
+            $query->where('status', '=', $status);
+          })
         ->where('status_change', '>=', $start)
         ->where('status_change', '<=', $end)->count();
     
     return $subscriptions;
   }
   
+  /**
+   * Return the subscriptions actives until the date
+   * @param string $date
+   * @return int
+   */
   public function getActives($date) {
     $start = $date . ' 23:59:59';
     $subscriptionsAll = DB::table('subscriptions')

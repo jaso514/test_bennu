@@ -10,14 +10,15 @@ use App\Models\Subscriptions;
 
 class SubscriptionController extends Controller
 {
-
+//    public function create(Request $request) {
+//    }
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function create(Request $request) {
         $customer = Users::where('nro_cliente', $request->customer)->first();
         if (!$customer) {
             return response()->json('Customer not found', 404);
@@ -68,7 +69,7 @@ class SubscriptionController extends Controller
             return response()->json('Service not found', 404);
         }
         
-        // the subscribe status
+        // the unsubscribe status object
         $unsubscribe = Status::where('status', 'unsubscribe')->first();
         
         $subsRepo = new \App\Repositories\SubscriptionRepository();
